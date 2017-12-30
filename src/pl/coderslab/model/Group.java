@@ -1,4 +1,4 @@
-package pl.coderslab.controller;
+package pl.coderslab.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,9 +11,12 @@ public class Group {
     
     private static final String LOAD_ALL_QUERY = "SELECT * FROM user_group;";
     private static final String LOAD_BY_ID_QUERY = "SELECT * FROM user_group WHERE id=?;";
-    private static final String CREATE_QUERY = "INSERT INTO user_group VALUES(null, ?);";
+    private static final String CREATE_QUERY = "INSERT INTO user_group(name) VALUES(?);";
     private static final String UPDATE_QUERY = "UPDATE user_group SET name=? WHERE id=?;";
     private static final String DELETE_QUERY = "DELETE FROM user_group WHERE id=?;";
+    private static final String LOAD_WITH_LIMIT_ASC = "SELECT * FROM user_group ORDER BY ? ASC LIMIT ? OFFSET ?;";
+    private static final String LOAD_WITH_LIMIT_DESC = "SELECT * FROM user_group ORDER BY ? DESC LIMIT ? OFFSET ?;";
+    private static final String GET_GROUP_COUNT = "SELECT COUNT(*) FROM user_group;";
     
     private int id;
     private String name;
@@ -42,6 +45,59 @@ public class Group {
         }
         
         return groupList.toArray(new Group[groupList.size()]);
+    }
+
+    public static Group[] loadSortedWithLimit(Connection con, Column sortColumnName, SortType sortType, int limit, int offset) throws SQLException {
+        List<Group> groupList = new ArrayList<Group>();
+        String sql = sortType.equals(SortType.ASC) ? LOAD_WITH_LIMIT_ASC : LOAD_WITH_LIMIT_DESC;
+        
+        try ( PreparedStatement ps = con.prepareStatement(sql) ) {
+            ps.setString(1, sortColumnName.getName());
+            ps.setInt(2, limit);
+            ps.setInt(3, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while ( rs.next() ) {
+                    groupList.add( new Group(rs) );
+                }
+            }
+        }
+        return groupList.toArray(new Group[groupList.size()]);
+    }
+    
+    public static int getGroupCount(Connection con) throws SQLException { 
+        int count = -1;
+        try ( ResultSet rs = con.prepareStatement(GET_GROUP_COUNT).executeQuery() ) {
+            while ( rs.next() ) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
+    }
+    
+    public static enum Column {
+        ID("id"), NAME("name");
+        
+        private String name;
+        
+        private Column(String column) {
+            this.name = column;
+        }
+        public String getName() {
+            return name;
+        }
+    }
+    
+    public static enum SortType {
+        ASC("ASC"), DESC("DESC");
+        
+        private String type;
+        
+        private SortType(String type) {
+            this.type = type;
+        }
+        public String getName() {
+            return type;
+        }
     }
     
     public static Group loadById(Connection con, int id) throws SQLException {

@@ -1,4 +1,4 @@
-package pl.coderslab.controller;
+package pl.coderslab.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +17,9 @@ public class User {
     private static final String LOAD_ALL_QUERY = "SELECT * FROM user;";
     private static final String LOAD_BY_GROUP_ID_QUERY = "SELECT * FROM user WHERE user_group_id=?;";
     private static final String LOAD_BY_ID_QUERY = "SELECT * FROM user WHERE id=?;";
+    private static final String LOAD_WITH_LIMIT_ASC = "SELECT * FROM user ORDER BY ? ASC LIMIT ? OFFSET ?;";
+    private static final String LOAD_WITH_LIMIT_DESC = "SELECT * FROM user ORDER BY ? DESC LIMIT ? OFFSET ?;";
+    private static final String GET_USERS_COUNT = "SELECT COUNT(*) FROM user;";
     
     private int id = 0;
     private String username;
@@ -154,6 +157,23 @@ public class User {
         return u;
     }
     
+    public static User[] loadSortedWithLimit(Connection con, Column sortColumnName, SortType sortType, int limit, int offset) throws SQLException {
+        List<User> userList = new ArrayList<>();
+        String sql = sortType.equals(SortType.ASC) ? LOAD_WITH_LIMIT_ASC : LOAD_WITH_LIMIT_DESC;
+        
+        try ( PreparedStatement ps = con.prepareStatement(sql) ) {
+            ps.setString(1, sortColumnName.getName());
+            ps.setInt(2, limit);
+            ps.setInt(3, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while ( rs.next() ) {
+                    userList.add( new User(rs) );
+                }
+            }
+        }
+        return userList.toArray(new User[userList.size()]);
+    }
+    
     public static User[] loadAllByGroupId(Connection con, int id) throws SQLException {
         List<User> usersList = new ArrayList<User>();
         
@@ -166,6 +186,42 @@ public class User {
             }
         }
         return usersList.toArray(new User[usersList.size()]);
+    }
+    
+    public static int getUsersCount(Connection con) throws SQLException { 
+        int count = -1;
+        try ( ResultSet rs = con.prepareStatement(GET_USERS_COUNT).executeQuery() ) {
+            while ( rs.next() ) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
+    }
+    
+    public static enum Column {
+        ID("id"), USERNAME("username"), EMAIL("email"), GROUP_ID("user_group_id");
+        
+        private String name;
+        
+        private Column(String column) {
+            this.name = column;
+        }
+        public String getName() {
+            return name;
+        }
+    }
+    
+    public static enum SortType {
+        ASC("ASC"), DESC("DESC");
+        
+        private String type;
+        
+        private SortType(String type) {
+            this.type = type;
+        }
+        public String getName() {
+            return type;
+        }
     }
     
     @Override

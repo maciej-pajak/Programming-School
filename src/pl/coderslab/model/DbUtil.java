@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.sql.DataSource;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 
 
 
@@ -25,6 +25,7 @@ public class DbUtil {
             ds = (DataSource)ctx.lookup("java:comp/env/jdbc/school");
             } catch (NamingException e) {
                 e.printStackTrace();
+                System.out.println("ups.. " + e.getMessage());
             }
         }
         return ds;
