@@ -1,4 +1,4 @@
-package pl.coderslab.model.dao;
+package pl.coderslab.model.standards;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.coderslab.model.DbUtil;
-import pl.coderslab.model.data.DataTypeInterface;
 
-public abstract class AbstractDao<T extends DataTypeInterface<T>> implements DaoInterface<T> {
+public abstract class AbstractDao<T extends DataType<T>> implements DaoInterface<T> {
     
     protected abstract T newItemFromRs(ResultSet rs) throws SQLException;
     protected abstract T[] getNewArray(int size);

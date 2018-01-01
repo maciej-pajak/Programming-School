@@ -1,8 +1,9 @@
-package pl.coderslab.model.data;
+package pl.coderslab.model;
 
-import pl.coderslab.model.dao.ColumnsEnumInterface;
+import pl.coderslab.model.standards.ColumnsEnumInterface;
+import pl.coderslab.model.standards.DataType;
 
-public class Exercise implements DataTypeInterface<Exercise> {
+public class Exercise extends DataType<Exercise> {
     
     private int id;
     private String title;
@@ -22,7 +23,7 @@ public class Exercise implements DataTypeInterface<Exercise> {
         return id;
     }
 
-    public Exercise setId(int id) {
+    protected Exercise setId(int id) {
         this.id = id;
         return this;
     }

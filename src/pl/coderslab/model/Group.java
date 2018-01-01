@@ -1,6 +1,8 @@
-package pl.coderslab.model.data;
+package pl.coderslab.model;
 
-public class Group implements DataTypeInterface<Group> {
+import pl.coderslab.model.standards.DataType;
+
+public class Group extends DataType<Group> {
 
     private int id;
     private String name;
@@ -27,7 +29,7 @@ public class Group implements DataTypeInterface<Group> {
         return id;
     }
     
-    public Group setId(int id) {
+    protected Group setId(int id) {
         this.id = id;
         return this;
     }

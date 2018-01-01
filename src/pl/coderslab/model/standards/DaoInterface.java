@@ -1,4 +1,4 @@
-package pl.coderslab.model.dao;
+package pl.coderslab.model.standards;
 
 public interface DaoInterface<T> {
     

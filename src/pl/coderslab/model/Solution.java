@@ -1,11 +1,12 @@
-package pl.coderslab.model.data;
+package pl.coderslab.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import pl.coderslab.model.dao.ColumnsEnumInterface;
+import pl.coderslab.model.standards.ColumnsEnumInterface;
+import pl.coderslab.model.standards.DataType;
 
-public class Solution implements DataTypeInterface<Solution> {
+public class Solution extends DataType<Solution> {
     
     
     private int id;
@@ -124,7 +125,7 @@ public class Solution implements DataTypeInterface<Solution> {
         return id;
     }
     
-    public Solution setId(int id) {
+    protected Solution setId(int id) {
         this.id = id;
         return this;
     }

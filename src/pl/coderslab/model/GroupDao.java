@@ -1,11 +1,12 @@
-package pl.coderslab.model.dao;
+package pl.coderslab.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import pl.coderslab.model.data.Group;
+import pl.coderslab.model.standards.AbstractDao;
+import pl.coderslab.model.standards.ColumnsEnumInterface;
 
 public class GroupDao extends AbstractDao<Group> {
 

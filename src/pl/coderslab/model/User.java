@@ -1,10 +1,11 @@
-package pl.coderslab.model.data;
+package pl.coderslab.model;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import pl.coderslab.model.dao.ColumnsEnumInterface;
+import pl.coderslab.model.standards.ColumnsEnumInterface;
+import pl.coderslab.model.standards.DataType;
 
-public class User implements DataTypeInterface<User> {
+public class User extends DataType<User> {
     
     private int id = 0;
     private String username;
@@ -32,7 +33,7 @@ public class User implements DataTypeInterface<User> {
         return this.id;
     }
     
-    public User setId(int id) {     // TODO maybe protected?
+    protected User setId(int id) {
         this.id = id;
         return this;
     }

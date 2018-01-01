@@ -1,4 +1,4 @@
-package pl.coderslab.model.dao;
+package pl.coderslab.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.coderslab.model.data.Solution;
+import pl.coderslab.model.standards.AbstractDao;
 
 public class SolutionDao extends AbstractDao<Solution> {
 
