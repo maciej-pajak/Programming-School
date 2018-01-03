@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:navWrapper title="Admin">
+<t:pageWrapper title="Admin">
     <jsp:attribute name="adminActive">
         class="active"
     </jsp:attribute>
@@ -33,4 +33,4 @@
                 </div>
             </div>
     </jsp:body>
-</t:navWrapper>
+</t:pageWrapper>

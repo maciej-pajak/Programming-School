@@ -1,5 +1,7 @@
 package pl.coderslab.model.standards;
 
-public interface ColumnsEnumInterface {
+import java.io.Serializable;
+
+public interface ColumnsEnumInterface extends Serializable {
         public String getName();
 }

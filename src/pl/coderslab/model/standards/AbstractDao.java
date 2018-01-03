@@ -15,8 +15,6 @@ public abstract class AbstractDao<T extends DataType<T>> implements DaoInterface
     protected abstract T[] getNewArray(int size);
     
     protected abstract String getLoadAllQuery();
-    protected abstract String getLoadWithLimitAscQuery();
-    protected abstract String getLoadWithLimitDescQuery();
     protected abstract String getCountQuery();
     protected abstract String getLoadByIdQuery();
     
@@ -39,14 +37,15 @@ public abstract class AbstractDao<T extends DataType<T>> implements DaoInterface
         return list.toArray( getNewArray(list.size()) );
     }
 
+    protected abstract String getLoadWithLimitFormatQuery();
+    
     public T[] loadSortedWithLimit(ColumnsEnumInterface sortColumnName, DaoInterface.SortType sortType, int limit, int offset) {
         List<T> list = new ArrayList<>();
-        String sql = sortType.equals(DaoInterface.SortType.ASC) ? getLoadWithLimitAscQuery() : getLoadWithLimitDescQuery();
+        String sqlFormat = getLoadWithLimitFormatQuery();
         try (Connection con = DbUtil.getConn()) {
-            try ( PreparedStatement ps = con.prepareStatement(sql) ) {
-                ps.setString(1, sortColumnName.getName());
-                ps.setInt(2, limit);
-                ps.setInt(3, offset);
+            try ( PreparedStatement ps = con.prepareStatement(String.format(sqlFormat, sortColumnName.getName(), sortType.getName())) ) {
+                ps.setInt(1, limit);
+                ps.setInt(2, offset);
                 try (ResultSet rs = ps.executeQuery()) {
                     while ( rs.next() ) {
                         list.add( newItemFromRs(rs) );

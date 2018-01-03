@@ -13,4 +13,8 @@
     <param-name>number-solutions</param-name>
     <param-value>5</param-value>
   </context-param>
+  <context-param>
+    <param-name>items-on-page-default</param-name>
+    <param-value>5</param-value>
+  </context-param>
 </web-app>

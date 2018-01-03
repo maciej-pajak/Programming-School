@@ -23,7 +23,7 @@
 	<jsp:body>
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Manage groups</h1>
+                <h1 class="page-header">Manage users</h1>
             </div>
         </div>
         <div class="row">
@@ -31,7 +31,7 @@
                 <div class="panel panel-success">
 	                <div class="panel-heading">
 	                    <h4 class="panel-title">
-	                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Create new group</a>
+	                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Create new user</a>
 	                    </h4>
 	                </div>
 	                <div id="collapseOne" class="panel-collapse collapse">
@@ -56,37 +56,33 @@
                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                     <thead>
                         <tr>
-                            <th><form role="form" method="post">
-                                    Group
-	                                <input type="hidden" name="formType" value="sort"/>
-	                                <input type="hidden" name="sortBy" value="NAME"/>
-	                                <button type="submit" class="btn btn-default btn-xs fa fa-sort-asc" name="sortType" value="ASC"></button>
-	                                <button type="submit" class="btn btn-default btn-xs fa fa-sort-desc"name="sortType" value="DESC"></button>
-	                            </form>
-                            </th>
-                            
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Group</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${items}" var="group">
+                        <c:forEach items="${items}" var="user">
                             <tr class="odd gradeX">
-                                <td>${group.name}</td>
+                                <td>${user.username}</td>
+                                <td>${user.email}</td>
+                                <td>${user.getGroupId()}</td>
                                 <td>
-                                    <a type="button" class="btn btn-primary btn-xs" href="?page=${currentPage}&edit=${group.id}#edit">Edit</a>
-                                    <a type="button" class="btn btn-danger btn-xs" href="?page=${currentPage}&delete=${group.id}#delete">Delete</a>
+                                    <a type="button" class="btn btn-primary btn-xs" href="?edit=${user.id}">Edit</a>
+                                    <a type="button" class="btn btn-danger btn-xs" href="?delete=${user.id}#delete">Delete</a>
                                 </td>
                             </tr>
                             <c:choose>
-	                            <c:when test="${param.edit eq group.id}">
+	                            <c:when test="${param.edit eq user.id}">
 	                               <tr class="info">
 	                                    <td colspan="3">
 	                                       <form role="form" method="post">
 	                                           <input type="hidden" name="formType" value="edit" />
-	                                           <input type="hidden" name="itemId" value="${group.id}" />
-	                                           <div class="form-group" id="edit">
-	                                                <label>Group name:</label>
-	                                                <input class="form-control" name="newName" placeholder="${group.name}">
+	                                           <input type="hidden" name="userId" value="${user.id}" />
+	                                           <div class="form-group">
+	                                                <label>User name:</label>
+	                                                <input class="form-control" name="newName" placeholder="${user.username}">
 	                                           </div>
 	                                           <a type="button" class="btn btn-default btn-outline btn-sm" href="?page=${currentPage}">Discard changes</a>
 	                                           <button type="submit" class="btn btn-success btn-sm">Save changes</button>
@@ -94,14 +90,14 @@
 	                                    </td>
 	                                </tr>
 	                            </c:when>
-	                            <c:when test="${param.delete eq group.id}">
+	                            <c:when test="${param.delete eq user.id}">
 	                               <tr class="danger">
                                         <td colspan="3">
                                            <form role="form" method="post">
                                                <input type="hidden" name="formType" value="delete" />
-                                               <input type="hidden" name="itemId" value="${group.id}" />
-                                               <h4 id="delete">Are you sure you want to delete group: <strong>${group.name}</strong>?</h4>
-                                               <a type="button" class="btn btn-default btn-outline btn-sm" href="?page=${currentPage}">Cancel</a>
+                                               <input type="hidden" name="userId" value="${user.id}" />
+                                               <h4 id="delete">Are you sure you want to delete group: <strong>${user.username}</strong>?</h4>
+                                               <a type="button" class="btn btn-default btn-outline btn-sm" href="?show=${show}">Cancel</a>
                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                            </form>
                                         </td>

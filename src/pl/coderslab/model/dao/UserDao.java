@@ -1,4 +1,4 @@
-package pl.coderslab.model;
+package pl.coderslab.model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,22 +7,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.coderslab.model.User;
 import pl.coderslab.model.standards.AbstractDao;
 
 public class UserDao extends AbstractDao<User> {
 
     private static final String CREATE_USER_QUERY = "INSERT INTO user VALUES(null, ?, ?, ?, ?);";
-    private static final String UPDATE_USER_QUERY = "UPDATE user SET username=?, email=?, password=? user_group_id=? WHERE id=?;";
+    private static final String UPDATE_USER_QUERY = "UPDATE user SET username=?, email=?, password=?, user_group_id=? WHERE id=?;";
     private static final String DELETE_USER_QUERY = "DELETE FROM user WHERE id=?;";
     private static final String LOAD_ALL_QUERY = "SELECT * FROM user;";
     private static final String LOAD_BY_GROUP_ID_QUERY = "SELECT * FROM user WHERE user_group_id=?;";
     private static final String LOAD_BY_ID_QUERY = "SELECT * FROM user WHERE id=?;";
-    private static final String LOAD_WITH_LIMIT_ASC = "SELECT * FROM user ORDER BY ? ASC LIMIT ? OFFSET ?;";
-    private static final String LOAD_WITH_LIMIT_DESC = "SELECT * FROM user ORDER BY ? DESC LIMIT ? OFFSET ?;";
+    private static final String LOAD_WITH_LIMIT = "SELECT * FROM user ORDER BY %s %s LIMIT ? OFFSET ?;";
     private static final String GET_USERS_COUNT = "SELECT COUNT(*) FROM user;";
 
     public User[] loadAllByGroupId(Connection con, int id) throws SQLException {
-        List<User> usersList = new ArrayList<User>();
+        List<User> usersList = new ArrayList<>();
         
         try ( PreparedStatement ps = con.prepareStatement(LOAD_BY_GROUP_ID_QUERY) ) {
             ps.setInt(1, id);
@@ -66,7 +66,11 @@ public class UserDao extends AbstractDao<User> {
     
     @Override
     protected User newItemFromRs(ResultSet rs) throws SQLException {
-        return new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"), rs.getString("password"), rs.getInt("user_group_id"));
+        return new User(    rs.getInt(User.Column.ID.getName()),
+                            rs.getString(User.Column.USERNAME.getName()),
+                            rs.getString(User.Column.EMAIL.getName()),
+                            rs.getString(User.Column.PASSWORD.getName()),
+                            rs.getInt(User.Column.GROUPID.getName()));
     }
 
     @Override
@@ -85,17 +89,12 @@ public class UserDao extends AbstractDao<User> {
     }
 
     @Override
-    protected String getLoadWithLimitAscQuery() {
-        return LOAD_WITH_LIMIT_ASC;
-    }
-
-    @Override
-    protected String getLoadWithLimitDescQuery() {
-        return LOAD_WITH_LIMIT_DESC;
-    }
-
-    @Override
     protected String getCountQuery() {
         return GET_USERS_COUNT;
+    }
+
+    @Override
+    protected String getLoadWithLimitFormatQuery() {
+        return LOAD_WITH_LIMIT;
     }
 }

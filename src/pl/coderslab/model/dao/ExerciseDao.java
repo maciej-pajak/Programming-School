@@ -1,4 +1,4 @@
-package pl.coderslab.model;
+package pl.coderslab.model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.coderslab.model.Exercise;
 import pl.coderslab.model.standards.AbstractDao;
 
 public class ExerciseDao extends AbstractDao<Exercise> {
@@ -17,12 +18,11 @@ public class ExerciseDao extends AbstractDao<Exercise> {
     private static final String DELETE_QUERY = "DELETE FROM exercise WHERE id=?;";
     private static final String CREATE_QUERY = "INSERT INTO exercise (title, description) VALUES(?, ?);";
     private static final String UPDATE_QUERY = "UPDATE exercise SET title=?, description=? WHERE id=?;";
-    private static final String LOAD_WITH_LIMIT_ASC = "SELECT * FROM exercise ORDER BY ? ASC LIMIT ? OFFSET ?;";
-    private static final String LOAD_WITH_LIMIT_DESC = "SELECT * FROM exercise ORDER BY ? DESC LIMIT ? OFFSET ?;";
+    private static final String LOAD_WITH_LIMIT = "SELECT * FROM exercise ORDER BY %s %s LIMIT ? OFFSET ?;";
     private static final String GET_EXERCISE_COUNT = "SELECT COUNT(*) FROM exercise;";
     
     public Exercise[] loadAllByUserId(Connection con, int id) throws SQLException {
-        List<Exercise> solutionList = new ArrayList<Exercise>();
+        List<Exercise> solutionList = new ArrayList<>();
         try (PreparedStatement ps = con.prepareStatement(LOAD_BY_USER_ID_QUERY)) {
 
             ps.setInt(1, id);
@@ -80,20 +80,14 @@ public class ExerciseDao extends AbstractDao<Exercise> {
     protected String getLoadByIdQuery() {
         return LOAD_BY_ID_QUERY;
     }
-
-    @Override
-    protected String getLoadWithLimitAscQuery() {
-        return LOAD_WITH_LIMIT_ASC;
-    }
-
-    @Override
-    protected String getLoadWithLimitDescQuery() {
-        return LOAD_WITH_LIMIT_DESC;
-    }
-
     @Override
     protected String getCountQuery() {
         return GET_EXERCISE_COUNT;
+    }
+
+    @Override
+    protected String getLoadWithLimitFormatQuery() {
+        return LOAD_WITH_LIMIT;
     }
     
 }

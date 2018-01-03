@@ -11,17 +11,17 @@ public class User extends DataType<User> {
     private String username;
     private String email;
     private String password;
-    private int group_id;
+    private int groupId;
     
-    public User(String username, String email, String password, int group_id) {
-        this(0, username, email, password, group_id);
+    public User(String username, String email, String password, int groupId) {
+        this(0, username, email, password, groupId);
     }
     
-    public User(int id, String username, String email, String password, int group_id) {
+    public User(int id, String username, String email, String password, int groupId) {
         setUsername(username);
         setEmail(email);
-        this.id = id;
-        setGroupId(group_id);
+        setId(id);
+        setGroupId(groupId);
         if ( id == 0 ) {
             setPassword(password);
         } else {
@@ -66,15 +66,15 @@ public class User extends DataType<User> {
     }
     
     public int getGroupId() {
-        return group_id;
+        return groupId;
     }
     
-    public User setGroupId(int group_id) {
-        this.group_id = group_id;
+    public User setGroupId(int groupId) {
+        this.groupId = groupId;
         return this;
     }
-    
-    public static enum Column implements ColumnsEnumInterface {
+
+    public enum Column implements ColumnsEnumInterface {
         ID("id"), USERNAME("username"), EMAIL("email"), PASSWORD("password"), GROUPID("user_group_id");
         
         private String name;

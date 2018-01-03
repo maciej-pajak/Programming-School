@@ -1,12 +1,12 @@
-package pl.coderslab.model;
+package pl.coderslab.model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import pl.coderslab.model.Group;
 import pl.coderslab.model.standards.AbstractDao;
-import pl.coderslab.model.standards.ColumnsEnumInterface;
 
 public class GroupDao extends AbstractDao<Group> {
 
@@ -15,26 +15,16 @@ public class GroupDao extends AbstractDao<Group> {
     private static final String CREATE_QUERY = "INSERT INTO user_group(name) VALUES(?);";
     private static final String UPDATE_QUERY = "UPDATE user_group SET name=? WHERE id=?;";
     private static final String DELETE_QUERY = "DELETE FROM user_group WHERE id=?;";
-    private static final String LOAD_WITH_LIMIT_ASC = "SELECT * FROM user_group ORDER BY ? ASC LIMIT ? OFFSET ?;";
-    private static final String LOAD_WITH_LIMIT_DESC = "SELECT * FROM user_group ORDER BY ? DESC LIMIT ? OFFSET ?;";
     private static final String GET_GROUP_COUNT = "SELECT COUNT(*) FROM user_group;";
-
-    public static enum Column implements ColumnsEnumInterface {
-        ID("id"), NAME("name");
-        
-        private String name;
-        
-        private Column(String column) {
-            this.name = column;
-        }
-        public String getName() {
-            return name;
-        }
+    private static final String LOAD_WITH_LIMIT = "SELECT * FROM user_group ORDER BY %s %s LIMIT ? OFFSET ?;";
+    
+    protected String getLoadWithLimitFormatQuery() {
+        return LOAD_WITH_LIMIT;
     }
     
     @Override
     protected PreparedStatement saveNewStatement(Connection con, Group group) throws SQLException {
-        String[] genereatedColumns = { GroupDao.Column.ID.getName() };
+        String[] genereatedColumns = { Group.Column.ID.getName() };
         PreparedStatement ps = con.prepareStatement(CREATE_QUERY, genereatedColumns);
         ps.setString(1, group.getName());
         return ps;
@@ -74,17 +64,7 @@ public class GroupDao extends AbstractDao<Group> {
     protected String getLoadByIdQuery() {
         return LOAD_BY_ID_QUERY;
     }
-
-    @Override
-    protected String getLoadWithLimitAscQuery() {
-        return LOAD_WITH_LIMIT_ASC;
-    }
-
-    @Override
-    protected String getLoadWithLimitDescQuery() {
-        return LOAD_WITH_LIMIT_DESC;
-    }
-
+    
     @Override
     protected String getCountQuery() {
         return GET_GROUP_COUNT;

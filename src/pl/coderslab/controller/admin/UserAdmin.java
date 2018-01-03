@@ -1,99 +1,75 @@
 package pl.coderslab.controller.admin;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import pl.coderslab.model.DbUtil;
-import pl.coderslab.model.Group;
 import pl.coderslab.model.User;
+import pl.coderslab.model.dao.GroupDao;
+import pl.coderslab.model.dao.UserDao;
+import pl.coderslab.model.standards.ColumnsEnumInterface;
+import pl.coderslab.model.standards.DaoInterface;
 
 @WebServlet("/panel/users")
-public class UserAdmin extends HttpServlet {
+public class UserAdmin extends AbstractServlet<User> {
 	private static final long serialVersionUID = 1L;
 	
-	private static final String ITEMS_ON_PAGE_COOKIE_NAME = "itemsOnPage";
+	protected void sendAdditionalItemsForEdit(HttpServletRequest request) {
+	    GroupDao dao = new GroupDao();
+        request.setAttribute("groups", dao.loadAll());
+    }
 	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    User[] users = null;
-	    int numberOfPages = 1;
-	    int currentPage = 1;
-	    int itemsOnPage = 5; // TODO default from config
-	    String itemsOnPageStr = getCookieValue(ITEMS_ON_PAGE_COOKIE_NAME, request);
-	    if (itemsOnPageStr != null) {
-	        itemsOnPage = Integer.parseInt(itemsOnPageStr);
-	    }
-		try (Connection con = DbUtil.getConn()) {
-		    
-		    numberOfPages = (int) Math.ceil((double)User.getUsersCount(con) / itemsOnPage);
-		    String currentPageStr = request.getParameter("page");
-	        if (currentPageStr != null) {
-	            int tmp = Integer.parseInt(currentPageStr);
-	            if (tmp > numberOfPages) {
-	                currentPage = numberOfPages;
-	            } else if (tmp < 1) {
-	                currentPage = 1;
-	            } else {
-	                currentPage = tmp;
-	            }
-	        }
-		    users = User.loadSortedWithLimit(con, User.Column.USERNAME, User.SortType.ASC, itemsOnPage, (currentPage - 1) * itemsOnPage);
-		    System.out.println(numberOfPages);
-		} catch (SQLException e) {
-		    e.printStackTrace();
-		}
-		
-		request.setAttribute("users", users);
-		request.setAttribute("currentPage", currentPage);
-		request.setAttribute("numberOfPages", numberOfPages);
-		
-		request.getRequestDispatcher("/panel/users.jsp").forward(request, response);
-	}
+	protected void mapAdditionalIdsToStrings(HttpServletRequest request, User[] usersOnPage) {
+        GroupDao dao = new GroupDao();
+        Map<Integer,String> groupsNames = new HashMap<>();
+        for (User u : usersOnPage) {
+            if ( !groupsNames.containsKey(u.getGroupId()) ) {
+                groupsNames.put(u.getGroupId(), dao.loadById(u.getGroupId()).getName());
+            }
+        }
+        request.setAttribute("groupsNames", groupsNames);
+    }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    try (Connection con = DbUtil.getConn()) {
-	        switch (request.getParameter("formType")) {
-	        case "new":
-	            Group newGroup = new Group(request.getParameter("name"));
-	            newGroup.saveToDb(con);
-	            break;
-	        case "edit":
-	            Group editGroup = Group.loadById(con, Integer.parseInt(request.getParameter("userId")));  // TODO number formatting exception
-	            editGroup.setName(request.getParameter("newName"));
-	            editGroup.saveToDb(con);
-	            break;
-	        case "delete":
-	            Group delGroup = Group.loadById(con, Integer.parseInt(request.getParameter("userId")));
-                delGroup.delete(con);
-	            break;
-	        case "showPages":
-	            Cookie c = new Cookie(ITEMS_ON_PAGE_COOKIE_NAME, request.getParameter("show"));
-	            response.addCookie(c);
-	            break;
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    response.sendRedirect(request.getContextPath() + "/panel/users");
-	}
-	
-	private static String getCookieValue(String name, HttpServletRequest request) {
-	    Cookie[] cookies = request.getCookies();
-	    String result = null;
-	    for (Cookie c : cookies) {
-	        if (c.getName().equals(name)) {
-	            result = c.getValue();
-	            break;
-	        }
-	    }
-	    return result;
-	}
+    protected User createObject(HttpServletRequest request) {
+        return new User(request.getParameter("name"), request.getParameter("email"), request.getParameter("pass"), Integer.parseInt(request.getParameter("groupId")));
+    }
+
+    protected User editObject(HttpServletRequest request, User object) {
+        System.out.println("editing: " + object.getUsername());
+        String username = request.getParameter("name");
+        if (!username.isEmpty()) {          // TODO check if this works correctly
+            object.setUsername(username);
+        }
+        String email = request.getParameter("email");
+        if (!email.isEmpty()) {
+            object.setEmail(email);
+        }
+        String password = request.getParameter("pass");
+        if (!password.isEmpty()) {
+            object.setPassword(password);
+        }
+        try {
+            int groupId = Integer.parseInt(request.getParameter("groupId"));
+            object.setGroupId(groupId);
+            System.out.println("id set: " + object.getId());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    protected ColumnsEnumInterface getSortDefault() {
+        return User.Column.USERNAME;
+    }
+
+    protected ColumnsEnumInterface getSortByColumn(String param) {  // TODO change to pass only enum 
+        return Enum.valueOf(User.Column.class, param);
+    }
+
+    protected DaoInterface<User> getDao() {
+        return new UserDao();
+    }
 
 }

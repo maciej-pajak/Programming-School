@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:navWrapper title="Admin">
+<t:pageWrapper title="Admin">
 	<jsp:attribute name="adminActive">
         class="active"
     </jsp:attribute>
@@ -31,60 +31,111 @@
                 <div class="panel panel-success">
 	                <div class="panel-heading">
 	                    <h4 class="panel-title">
-	                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Create new user</a>
+	                        <a href="?new">Create new user</a>
 	                    </h4>
 	                </div>
-	                <div id="collapseOne" class="panel-collapse collapse">
+	                <c:if test="${newOpen}">
 	                    <div class="panel-body">
 	                        <form role="form" method="post">
-	                           <input type="hidden" name="formType" value="new" />
+	                           <input type="hidden" name="actionType" value="new" />
 	                            <div class="form-group">
-	                                <label>Group name</label>
-	                                <input class="form-control" name="name">
-	                            </div>
+                                     <label>User name:</label>
+                                     <input class="form-control" name="name">
+                                </div>
+                                <div class="form-group">
+                                     <label>Email:</label>
+                                     <input class="form-control" name="email">
+                                </div>
+                                <div class="form-group">
+                                     <label>Password:</label>
+                                     <input type="password" class="form-control" name="pass">
+                                </div>
+                                <div class="form-group">
+                                     <label>Group</label>
+                                     <select class="form-control" name="groupId">
+                                         <c:forEach var="group" items="${groups}">
+                                               <option value="${group.id}">${group.name}</option>
+                                         </c:forEach>
+                                     </select>
+                                 </div>
+                                <a type="button" class="btn btn-default btn-outline btn-sm" href="?">Close</a>
 	                            <button type="submit" class="btn btn-success btn-sm">Create</button>
 	                       </form>
 	                       
 	                    </div>
+	                    </c:if>
 	                </div>
 	            </div>
                
             </div>
-        </div>
+
         <div class="row">
             <div class="col-lg-12">
                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                     <thead>
                         <tr>
-                            <th>User</th>
-                            <th>Email</th>
-                            <th>Group</th>
+                            <th>
+	                            <jsp:include page="/WEB-INF/fragments/sortForm.jsp">
+							        <jsp:param value="User" name="label"/>
+                                    <jsp:param value="USERNAME" name="column"/>
+							    </jsp:include>
+                            </th>
+                            <th>
+                                <jsp:include page="/WEB-INF/fragments/sortForm.jsp">
+                                    <jsp:param value="Email" name="label"/>
+                                    <jsp:param value="EMAIL" name="column"/>
+                                </jsp:include>
+                            </th>
+                            <th><form role="form" method="post">
+                                    Group
+                                    <input type="hidden" name="actionType" value="sort"/>
+                                    <input type="hidden" name="sortBy" value="GROUPID"/>
+                                    <button type="submit" class="btn btn-default btn-xs fa fa-sort-asc" name="sortType" value="ASC"></button>
+                                    <button type="submit" class="btn btn-default btn-xs fa fa-sort-desc"name="sortType" value="DESC"></button>
+                                </form>
+                            </th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${users}" var="user">
+                        <c:forEach items="${items}" var="user">
                             <tr class="odd gradeX">
                                 <td>${user.username}</td>
                                 <td>${user.email}</td>
-                                <td>${user.getGroupId()}</td>
+                                <td>${groupsNames.get(user.groupId)}</td>
                                 <td>
-                                    <a type="button" class="btn btn-primary btn-xs" href="?edit=${user.id}">Edit</a>
-                                    <a type="button" class="btn btn-danger btn-xs" href="?delete=${user.id}#delete">Delete</a>
+                                    <a type="button" class="btn btn-primary btn-xs" href="?page=${currentPage}&edit=${user.id}#edit">Edit</a>
+                                    <a type="button" class="btn btn-danger btn-xs" href="?page=${currentPage}&delete=${user.id}#delete">Delete</a>
                                 </td>
                             </tr>
                             <c:choose>
 	                            <c:when test="${param.edit eq user.id}">
 	                               <tr class="info">
-	                                    <td colspan="3">
+	                                    <td colspan="4">
 	                                       <form role="form" method="post">
-	                                           <input type="hidden" name="formType" value="edit" />
-	                                           <input type="hidden" name="userId" value="${user.id}" />
-	                                           <div class="form-group">
+	                                           <input type="hidden" name="actionType" value="edit" />
+	                                           <input type="hidden" name="itemId" value="${user.id}" />
+	                                           <div class="form-group" id="edit">
 	                                                <label>User name:</label>
-	                                                <input class="form-control" name="newName" placeholder="${user.username}">
+	                                                <input class="form-control" name="name" placeholder="${user.username}">
 	                                           </div>
-	                                           <a type="button" class="btn btn-default btn-outline btn-sm" href="?">Discard changes</a>
+	                                           <div class="form-group">
+                                                    <label>Email:</label>
+                                                    <input class="form-control" name="email" placeholder="${user.email}">
+                                               </div>
+                                               <div class="form-group">
+                                                    <label>New password:</label>
+                                                    <input type="password" class="form-control" name="pass">
+                                               </div>
+                                               <div class="form-group">
+		                                            <label>Group</label>
+		                                            <select class="form-control" name="groupId">
+		                                                <c:forEach var="group" items="${groups}">
+		                                                      <option value="${group.id}">${group.name}</option>
+		                                                </c:forEach>
+		                                            </select>
+		                                        </div>
+	                                           <a type="button" class="btn btn-default btn-outline btn-sm" href="?page=${currentPage}">Discard changes</a>
 	                                           <button type="submit" class="btn btn-success btn-sm">Save changes</button>
 	                                       </form>
 	                                    </td>
@@ -92,12 +143,12 @@
 	                            </c:when>
 	                            <c:when test="${param.delete eq user.id}">
 	                               <tr class="danger">
-                                        <td colspan="3">
+                                        <td colspan="4">
                                            <form role="form" method="post">
-                                               <input type="hidden" name="formType" value="delete" />
-                                               <input type="hidden" name="userId" value="${user.id}" />
-                                               <h4 id="delete">Are you sure you want to delete group: <strong>${user.username}</strong>?</h4>
-                                               <a type="button" class="btn btn-default btn-outline btn-sm" href="?show=${show}">Cancel</a>
+                                               <input type="hidden" name="actionType" value="delete" />
+                                               <input type="hidden" name="itemId" value="${user.id}" />
+                                               <h4 id="delete">Are you sure you want to delete user: <strong>${user.username}</strong>?</h4>
+                                               <a type="button" class="btn btn-default btn-outline btn-sm" href="?page=${currentPage}">Cancel</a>
                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                            </form>
                                         </td>
@@ -109,38 +160,6 @@
                 </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-2">
-                <div class="form-group">
-                    <form class="form-inline" method="post">
-                        <input type="hidden" name="formType" value="showPages" />
-			            <label>Show</label>
-			            <select class="form-control input-sm" onchange='this.form.submit();' name="show">
-			                 <c:set var="pages" value="5,10,15,25,50"/>
-			               <c:forEach items="${pages}" var="i">
-                                <option
-                                <c:if test="${i eq cookie.itemsOnPage.value}">selected="selected"</c:if>
-                                >${i}</option>
-                           </c:forEach>
-			            </select>
-		            </form>
-		        </div>
-		        
-            </div>
-            <div class="col-lg-10">
-                <ul class="pagination pagination-sm" style="margin:0px;">
-                    <li><a href="?page=${currentPage - 1}">Previous</a></li>
-                    <c:forEach var="page" begin = "1" end="${numberOfPages}">
-                        <li 
-                        <c:if test="${page eq currentPage}">
-                            class="active"
-                        </c:if>
-                        ><a href="?page=${page}">${page}</a></li>
-                    </c:forEach>
-
-                  <li><a href="?page=${currentPage + 1}">Next</a></li>
-                </ul>
-                </div>
-        </div> 
+        <%@ include file="/WEB-INF/fragments/pagination.jsp" %>
     </jsp:body>
-</t:navWrapper>
+</t:pageWrapper>

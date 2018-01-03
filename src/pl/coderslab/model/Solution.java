@@ -16,26 +16,26 @@ public class Solution extends DataType<Solution> {
     private int userId;
     private int exerciseId;
     
-    public Solution(int user_id, int exercise_id) {
+    public Solution(int userId, int exerciseId) {
         this.id = 0;
-        setUserId(user_id);
-        setExerciseId(exercise_id);
+        setUserId(userId);
+        setExerciseId(exerciseId);
     }
     
-    public Solution(String created, String updated, String description, int user_id, int exercise_id) {
-        this(0, created, updated, description, user_id, exercise_id);
+    public Solution(String created, String updated, String description, int userId, int exerciseId) {
+        this(0, created, updated, description, userId, exerciseId);
     }
     
-    public Solution(int id, String created, String updated, String description, int user_id, int exercise_id) {
+    public Solution(int id, String created, String updated, String description, int userId, int exerciseId) {
         this.id = id;
         setCreated(created);
         setUpdated(updated);
         setDescription(description);
-        setUserId(user_id);
-        setExerciseId(exercise_id);
+        setUserId(userId);
+        setExerciseId(exerciseId);
     }
     
-    public static enum Column implements ColumnsEnumInterface {
+    public enum Column implements ColumnsEnumInterface {
         ID("id"), CREATED("created"), UPDATED("updated"), DESCRIPTION("description"), USERID("user_id"), EXERCISE_ID("exercise_id");
         
         private String name;
@@ -48,7 +48,7 @@ public class Solution extends DataType<Solution> {
         }
     }
     
-    private static String LocalDateTimeToString(LocalDateTime dateTime) {
+    private static String localDateTimeToString(LocalDateTime dateTime) {
         if (dateTime == null) {
             return "";
         } else {
@@ -57,7 +57,7 @@ public class Solution extends DataType<Solution> {
         }
     }
     
-    private static LocalDateTime StringToLocalDateTime(String dateTimeStr) {
+    private static LocalDateTime stringToLocalDateTime(String dateTimeStr) {
         if (dateTimeStr == null) {
             return null;
         } else {
@@ -67,11 +67,11 @@ public class Solution extends DataType<Solution> {
     }
     
     public String getCreated() {
-        return LocalDateTimeToString(created);
+        return localDateTimeToString(created);
     }
 
     private Solution setCreated(String created) {
-        this.created = StringToLocalDateTime(created);
+        this.created = stringToLocalDateTime(created);
         return this;
     }
     
@@ -81,11 +81,11 @@ public class Solution extends DataType<Solution> {
     }
 
     public String getUpdated() {
-        return LocalDateTimeToString(updated);
+        return localDateTimeToString(updated);
     }
 
     public Solution setUpdated(String updated) {
-        this.updated = StringToLocalDateTime(updated);
+        this.updated = stringToLocalDateTime(updated);
         return this;
     }
     
@@ -107,8 +107,8 @@ public class Solution extends DataType<Solution> {
         return userId;
     }
 
-    public Solution setUserId(int user_id) {
-        this.userId = user_id;
+    public Solution setUserId(int userId) {
+        this.userId = userId;
         return this;
     }
 
@@ -116,8 +116,8 @@ public class Solution extends DataType<Solution> {
         return exerciseId;
     }
 
-    public Solution setExerciseId(int exercise_id) {
-        this.exerciseId = exercise_id;
+    public Solution setExerciseId(int exerciseId) {
+        this.exerciseId = exerciseId;
         return this;
     }
 

@@ -1,5 +1,6 @@
 package pl.coderslab.model;
 
+import pl.coderslab.model.standards.ColumnsEnumInterface;
 import pl.coderslab.model.standards.DataType;
 
 public class Group extends DataType<Group> {
@@ -32,6 +33,19 @@ public class Group extends DataType<Group> {
     protected Group setId(int id) {
         this.id = id;
         return this;
+    }
+    
+    public enum Column implements ColumnsEnumInterface {
+        ID("id"), NAME("name");
+        
+        private String name;
+        
+        private Column(String column) {
+            this.name = column;
+        }
+        public String getName() {
+            return name;
+        }
     }
     
     @Override

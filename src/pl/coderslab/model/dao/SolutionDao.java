@@ -1,4 +1,4 @@
-package pl.coderslab.model;
+package pl.coderslab.model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.coderslab.model.Solution;
 import pl.coderslab.model.standards.AbstractDao;
 
 public class SolutionDao extends AbstractDao<Solution> {
@@ -20,12 +21,11 @@ public class SolutionDao extends AbstractDao<Solution> {
     private static final String CREATE_QUERY = "INSERT INTO solution (created, user_id, exercise_id) VALUES(?, ?, ?);";
     private static final String UPDATE_QUERY = "UPDATE solution SET updated=?, description=? WHERE id=?;";
     private static final String LOAD_BY_EXERCISE_ID_QUERY = "SELECT * FROM solution JOIN exercise ON solution.id=exercise.soultion_id WHERE exercise.id=?;";
-    private static final String LOAD_WITH_LIMIT_ASC = "SELECT * FROM solution ORDER BY ? ASC LIMIT ? OFFSET ?;";
-    private static final String LOAD_WITH_LIMIT_DESC = "SELECT * FROM solution ORDER BY ? DESC LIMIT ? OFFSET ?;";
+    private static final String LOAD_WITH_LIMIT = "SELECT * FROM solution ORDER BY %s %s LIMIT ? OFFSET ?;";
     private static final String GET_SOLUTION_COUNT = "SELECT COUNT(*) FROM solution;";
 
     public Solution[] loadAllByUserId(Connection con, int id) throws SQLException {
-        List<Solution> solutionList = new ArrayList<Solution>();
+        List<Solution> solutionList = new ArrayList<>();
         
         try ( PreparedStatement ps = con.prepareStatement(LOAD_BY_USER_ID_QUERY) ) {
             ps.setInt(1, id);
@@ -118,17 +118,12 @@ public class SolutionDao extends AbstractDao<Solution> {
     }
 
     @Override
-    protected String getLoadWithLimitAscQuery() {
-        return LOAD_WITH_LIMIT_ASC;
-    }
-
-    @Override
-    protected String getLoadWithLimitDescQuery() {
-        return LOAD_WITH_LIMIT_DESC;
-    }
-
-    @Override
     protected String getCountQuery() {
         return GET_SOLUTION_COUNT;
+    }
+
+    @Override
+    protected String getLoadWithLimitFormatQuery() {
+        return LOAD_WITH_LIMIT;
     }
 }
