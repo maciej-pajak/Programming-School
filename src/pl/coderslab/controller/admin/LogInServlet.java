@@ -18,10 +18,12 @@ public class LogInServlet extends HttpServlet {
 	
 	private static final String USERNAME = "username";
 	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    request.getRequestDispatcher("login.jsp").forward(request, response);
 	}
 
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String nameLogin = request.getParameter(USERNAME);
 		String passLogin = request.getParameter("password");
