@@ -47,7 +47,7 @@ public class UserAdmin extends AbstractServlet<User> {
 
     protected User editObject(HttpServletRequest request, User object) {
         String username = request.getParameter("name");
-        if (!username.isEmpty()) {          // TODO check if this works correctly
+        if (!username.isEmpty()) {
             object.setUsername(username);
         }
         String email = request.getParameter("email");
@@ -61,7 +61,6 @@ public class UserAdmin extends AbstractServlet<User> {
         try {
             int groupId = Integer.parseInt(request.getParameter("groupId"));
             object.setGroupId(groupId);
-            System.out.println("id set: " + object.getId());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -72,7 +71,7 @@ public class UserAdmin extends AbstractServlet<User> {
         return User.Column.USERNAME;
     }
 
-    protected ColumnsEnumInterface getSortByColumn(String param) {  // TODO change to pass only enum 
+    protected ColumnsEnumInterface getSortByColumn(String param) {
         return Enum.valueOf(User.Column.class, param);
     }
 

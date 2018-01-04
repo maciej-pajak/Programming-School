@@ -20,9 +20,15 @@ import pl.coderslab.model.dao.UserDao;
 public class UserDetailsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    int userId = 0;
+	    try {
+	        userId = Integer.parseInt(request.getParameter("id"));
+	    } catch (NumberFormatException e) {
+	        e.printStackTrace();
+	    }
 
-        int userId = Integer.parseInt(request.getParameter("id"));     // TODO null pointer exception
         UserDao userDao = new UserDao();
         SolutionDao solutionDao = new SolutionDao();
         ExerciseDao exerciseDao = new ExerciseDao();

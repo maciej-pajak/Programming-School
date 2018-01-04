@@ -118,7 +118,7 @@ public abstract class AbstractServlet<T> extends HttpServlet {
             dao.delete(deletedObject);
             break;
         case "changeShowNumber":
-            Cookie c = new Cookie(getItemsOnPageCookieName(), request.getParameter("show"));    // TODO or session??
+            Cookie c = new Cookie(getItemsOnPageCookieName(), request.getParameter("show"));    // TODO or session ?
             response.addCookie(c);
             break;
         case "sort":
@@ -128,7 +128,7 @@ public abstract class AbstractServlet<T> extends HttpServlet {
         }
     }
 
-    private void saveSortAttributes(HttpServletRequest request) { // TODO or maybe cookie
+    private void saveSortAttributes(HttpServletRequest request) { // TODO or cookie ?
         try {
             ColumnsEnumInterface by = getSortByColumn(request.getParameter(SORT_BY_PARAM_NAME));
             DaoInterface.SortType type = DaoInterface.SortType.valueOf(request.getParameter(SORT_TYPE_PARAM_NAME));

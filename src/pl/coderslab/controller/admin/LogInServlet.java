@@ -16,19 +16,21 @@ import javax.servlet.http.HttpSession;
 public class LogInServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
+	private static final String USERNAME = "username";
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    request.getRequestDispatcher("login.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String nameLogin = request.getParameter("username");
+		String nameLogin = request.getParameter(USERNAME);
 		String passLogin = request.getParameter("password");
-		String name = getServletContext().getInitParameter("username");
+		String name = getServletContext().getInitParameter(USERNAME);
 		String pass = getServletContext().getInitParameter("password");
 
 		if ( pass.equals(passLogin) && name.equals(nameLogin) ) {
 		    HttpSession sess = request.getSession();
-		    sess.setAttribute("username", name);
+		    sess.setAttribute(USERNAME, name);
     
 		    response.sendRedirect("panel/groups");
 		} else {

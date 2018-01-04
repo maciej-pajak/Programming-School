@@ -44,7 +44,7 @@ public class Exercise extends DataType<Exercise> {
         this.description = description;
     }
 
-    public static enum Column implements ColumnsEnumInterface {
+    public enum Column implements ColumnsEnumInterface {
         ID("id"), TITLE("title"), DESCRIPTION("description");
         
         private String name;

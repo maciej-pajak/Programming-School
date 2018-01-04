@@ -9,11 +9,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-@WebFilter("/")
+@WebFilter("/*")
 public class EncodingFilter implements Filter {
 
 	public void destroy() {
-		// TODO Auto-generated method stub
+		// nothing
 	}
 
 
@@ -29,7 +29,7 @@ public class EncodingFilter implements Filter {
 
 
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
+		// nothing
 	}
 
 }
