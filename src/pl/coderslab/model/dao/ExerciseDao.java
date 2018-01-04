@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.coderslab.model.DbUtil;
 import pl.coderslab.model.Exercise;
 import pl.coderslab.model.standards.AbstractDao;
 
@@ -21,17 +22,21 @@ public class ExerciseDao extends AbstractDao<Exercise> {
     private static final String LOAD_WITH_LIMIT = "SELECT * FROM exercise ORDER BY %s %s LIMIT ? OFFSET ?;";
     private static final String GET_EXERCISE_COUNT = "SELECT COUNT(*) FROM exercise;";
     
-    public Exercise[] loadAllByUserId(Connection con, int id) throws SQLException {
+    public Exercise[] loadAllByUserId(int id) throws SQLException {
         List<Exercise> solutionList = new ArrayList<>();
-        try (PreparedStatement ps = con.prepareStatement(LOAD_BY_USER_ID_QUERY)) {
+        try (Connection con = DbUtil.getConn()) {
+            try (PreparedStatement ps = con.prepareStatement(LOAD_BY_USER_ID_QUERY)) {
 
-            ps.setInt(1, id);
+                ps.setInt(1, id);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    solutionList.add(newItemFromRs(rs));
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        solutionList.add(newItemFromRs(rs));
+                    }
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return solutionList.toArray(new Exercise[solutionList.size()]);
     }
