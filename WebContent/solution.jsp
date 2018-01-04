@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:navWrapper title="Solution">
+<t:pageWrapper title="Solution">
     <jsp:body>
         <div class="row">
             <div class="col-lg-12">
@@ -61,4 +61,4 @@
                 </div>
             </div>
     </jsp:body>
-</t:navWrapper>
+</t:pageWrapper>

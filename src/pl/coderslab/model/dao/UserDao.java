@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.coderslab.model.DbUtil;
 import pl.coderslab.model.User;
 import pl.coderslab.model.standards.AbstractDao;
 
@@ -21,16 +22,20 @@ public class UserDao extends AbstractDao<User> {
     private static final String LOAD_WITH_LIMIT = "SELECT * FROM user ORDER BY %s %s LIMIT ? OFFSET ?;";
     private static final String GET_USERS_COUNT = "SELECT COUNT(*) FROM user;";
 
-    public User[] loadAllByGroupId(Connection con, int id) throws SQLException {
+    public User[] loadAllByGroupId(int id) {
         List<User> usersList = new ArrayList<>();
-        
-        try ( PreparedStatement ps = con.prepareStatement(LOAD_BY_GROUP_ID_QUERY) ) {
-            ps.setInt(1, id);
-            try ( ResultSet rs = ps.executeQuery() ) {
-                while ( rs.next() ) {
-                    usersList.add(newItemFromRs(rs));
+        try (Connection con = DbUtil.getConn()) {
+            try ( PreparedStatement ps = con.prepareStatement(LOAD_BY_GROUP_ID_QUERY) ) {
+                ps.setInt(1, id);
+                try ( ResultSet rs = ps.executeQuery() ) {
+                    while ( rs.next() ) {
+                        usersList.add(newItemFromRs(rs));
+                    }
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("error: " + e.getMessage());
         }
         return usersList.toArray(new User[usersList.size()]);
     }

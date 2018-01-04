@@ -27,14 +27,14 @@ public class GroupAdmin extends AbstractServlet<Group> {
     }
 
     @Override
-    protected Map<Integer, String[]> table(ColumnsEnumInterface sortBy, SortType sortType, int limit, int offset) {
+    protected Map<String, String[]> table(ColumnsEnumInterface sortBy, SortType sortType, int limit, int offset) {
         GroupDao dao = new GroupDao();
         Group[] groups = dao.loadSortedWithLimit(sortBy, sortType, limit, offset);
-        Map<Integer, String[]> table = new LinkedHashMap<>();
+        Map<String, String[]> table = new LinkedHashMap<>();
         for (int i = 0 ; i < groups.length ; i++) {
             String[] row = new String[1];
             row[0] = groups[i].getName();
-            table.put(groups[i].getId(), row);
+            table.put(Integer.toString(groups[i].getId()), row);
         }
         return table;
     }

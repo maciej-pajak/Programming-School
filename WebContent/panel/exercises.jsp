@@ -16,12 +16,12 @@
     </jsp:attribute>
     <jsp:attribute name="editFormFields">
         <div class="form-group">
-             <label>Exercise name:${tableBody[param.edit]} ${param.edit.intValue()} ${tableBody}</label>
-             <input class="form-control" name="title" placeholder="${row.value[0]}">
+             <label>Exercise name:</label>
+             <input class="form-control" name="title" placeholder="${tableBody[param.edit][0]}">
         </div>
         <div class="form-group">
              <label>Exercise description:</label>
-             <textarea name="description" class="form-control" rows="8">${row.value[1]}</textarea>
+             <textarea name="description" class="form-control" rows="8">${tableBody[param.edit][1]}</textarea>
         </div>
     </jsp:attribute>
 </t:adminWrapper>

@@ -16,17 +16,17 @@ import pl.coderslab.model.standards.DaoInterface;
 public class UserAdmin extends AbstractServlet<User> {
 	private static final long serialVersionUID = 1L;
 	
-	protected Map<Integer, String[]> table(ColumnsEnumInterface sortBy, DaoInterface.SortType sortType, int limit, int offset) {
+	protected Map<String, String[]> table(ColumnsEnumInterface sortBy, DaoInterface.SortType sortType, int limit, int offset) {
 	    UserDao dao = new UserDao();
 	    GroupDao gDao = new GroupDao();
 	    User[] users = dao.loadSortedWithLimit(sortBy, sortType, limit, offset);
-	    Map<Integer, String[]> table = new LinkedHashMap<>();
+	    Map<String, String[]> table = new LinkedHashMap<>();
         for (int i = 0 ; i < users.length ; i++) {
             String[] row = new String[3];
             row[0] = users[i].getUsername();
             row[1] = users[i].getEmail();
             row[2] = gDao.loadById(users[i].getGroupId()).getName();
-            table.put(users[i].getId(), row);
+            table.put(Integer.toString(users[i].getId()), row);
         }
 	    return table;
 	}

@@ -29,11 +29,11 @@
     <jsp:attribute name="editFormFields">
 	    <div class="form-group">
 	         <label>User name:</label>
-	         <input class="form-control" name="name" placeholder="${row.value[0]}">
+	         <input class="form-control" name="name" placeholder="${tableBody[param.edit][0]}">
 	    </div>
 	    <div class="form-group">
 	         <label>Email:</label>
-	         <input class="form-control" name="email" placeholder="${row.value[1]}">
+	         <input class="form-control" name="email" placeholder="${tableBody[param.edit][1]}">
 	    </div>
 	    <div class="form-group">
 	         <label>New password:</label>

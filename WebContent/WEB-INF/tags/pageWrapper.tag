@@ -50,10 +50,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Coding School</a>
+                <a class="navbar-brand" href="${pageContext.request.contextPath}">Coding School</a>
             </div>
-            <!-- /.navbar-header -->
-
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
@@ -64,9 +62,10 @@
                             <a href="${pageContext.request.contextPath}/groups"><i class="fa fa-table fa-fw"></i> Groups</a>
                         </li>
                         <li ${adminActive}>
-                            <a href="${pageContext.request.contextPath}/panel"><i class="fa fa-edit fa-fw"></i> Admin panel</a>
+                            <a href="${pageContext.request.contextPath}/panel/groups"><i class="fa fa-edit fa-fw"></i> Admin panel</a>
                             <jsp:invoke fragment="adminMenu"/>
                         </li>
+                        
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

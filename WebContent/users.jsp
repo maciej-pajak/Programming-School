@@ -3,11 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:navWrapper title="Groups">
+<t:pageWrapper title="Users in group">
     <jsp:body>
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Users</h1>
+                <h1 class="page-header">Users in group</h1>
             </div>
         </div>
         <div class="row">
@@ -31,4 +31,4 @@
            </div>
         </div>
     </jsp:body>
-</t:navWrapper>
+</t:pageWrapper>

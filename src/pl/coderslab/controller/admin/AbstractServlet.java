@@ -25,7 +25,7 @@ public abstract class AbstractServlet<T> extends HttpServlet {
     
     protected abstract DaoInterface<T> getDao();
     protected abstract String[][] tableHeader();
-    protected abstract Map<Integer, String[]> table(ColumnsEnumInterface sortBy, DaoInterface.SortType sortType, int itemsOnPage, int offset);
+    protected abstract Map<String, String[]> table(ColumnsEnumInterface sortBy, DaoInterface.SortType sortType, int itemsOnPage, int offset);
     protected abstract ColumnsEnumInterface getSortDefault();
     protected abstract ColumnsEnumInterface getSortByColumn(String param);
     protected abstract T createObject(HttpServletRequest request);
@@ -53,11 +53,9 @@ public abstract class AbstractServlet<T> extends HttpServlet {
         request.setAttribute(TABLE_BODY_ATTR_NAME, table(sortBy, sortType, itemsOnPage, (currentPage - 1) * itemsOnPage) );
         request.setAttribute(TABLE_HEADER_ATTR_NAME, tableHeader());
         newOrEdit(request); // additional attributes for creating new or editing
-        try {
-            request.getRequestDispatcher(request.getServletPath() + ".jsp").forward(request, response);
-        } catch (ServletException | IOException e) {
-            e.printStackTrace();
-        }
+
+        request.getRequestDispatcher(request.getServletPath() + ".jsp").forward(request, response);
+
     }
     
     private void newOrEdit(HttpServletRequest request) {

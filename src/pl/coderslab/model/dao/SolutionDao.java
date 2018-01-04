@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.coderslab.model.DbUtil;
 import pl.coderslab.model.Solution;
 import pl.coderslab.model.standards.AbstractDao;
 
@@ -24,42 +25,31 @@ public class SolutionDao extends AbstractDao<Solution> {
     private static final String LOAD_WITH_LIMIT = "SELECT * FROM solution ORDER BY %s %s LIMIT ? OFFSET ?;";
     private static final String GET_SOLUTION_COUNT = "SELECT COUNT(*) FROM solution;";
 
-    public Solution[] loadAllByUserId(Connection con, int id) throws SQLException {
-        List<Solution> solutionList = new ArrayList<>();
-        
-        try ( PreparedStatement ps = con.prepareStatement(LOAD_BY_USER_ID_QUERY) ) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            while ( rs.next() ) {
-                solutionList.add(newItemFromRs(rs));
-            }
-            rs.close();
-        }
-        return solutionList.toArray(new Solution[solutionList.size()]);
+    public Solution[] loadAllByUserId(int id) {
+        return loadAllByQueryAndId(id, LOAD_BY_USER_ID_QUERY);
     }
     
-    public Solution[] loadUnsolvedByUserId(Connection con, int id) throws SQLException {
-        List<Solution> exerciseList = new ArrayList<Solution>();
-        try ( PreparedStatement ps = con.prepareStatement(LOAD_UNSOLVED_BY_USER_ID_QUERY) ) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            while ( rs.next() ) {
-                exerciseList.add(newItemFromRs(rs));
-            }
-            rs.close();
-        }
-        return exerciseList.toArray(new Solution[exerciseList.size()]);
+    public Solution[] loadUnsolvedByUserId(int id) {
+        return loadAllByQueryAndId(id, LOAD_UNSOLVED_BY_USER_ID_QUERY);
     }
     
-    public Solution[] loadAllByExerciseId(Connection con, int id) throws SQLException {
-        List<Solution> exerciseList = new ArrayList<Solution>();
-        try ( PreparedStatement ps = con.prepareStatement(LOAD_BY_EXERCISE_ID_QUERY) ) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            while ( rs.next() ) {
-                exerciseList.add(newItemFromRs(rs));
+    public Solution[] loadAllByExerciseId(int id) {
+        return loadAllByQueryAndId(id, LOAD_BY_EXERCISE_ID_QUERY);
+    }
+    
+    private Solution[] loadAllByQueryAndId(int id, String query) {
+        List<Solution> exerciseList = new ArrayList<>();
+        try (Connection con = DbUtil.getConn()) {
+            try ( PreparedStatement ps = con.prepareStatement(query) ) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                while ( rs.next() ) {
+                    exerciseList.add(newItemFromRs(rs));
+                }
+                rs.close();
             }
-            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return exerciseList.toArray(new Solution[exerciseList.size()]);
     }

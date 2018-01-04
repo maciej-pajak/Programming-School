@@ -21,6 +21,9 @@
             <li>
                 <a href="${pageContext.request.contextPath}/panel/exercises">Exercises</a>
             </li>
+            <li>
+	            <a href="${pageContext.request.contextPath}/panel/logout"><i class="fa fa-sign-out fa-fw"></i> Log out</a>
+	        </li>
         </ul>
     </jsp:attribute>
     <jsp:body>

@@ -27,15 +27,15 @@ public class ExerciseAdmin extends AbstractServlet<Exercise> {
     }
 
     @Override
-    protected Map<Integer, String[]> table(ColumnsEnumInterface sortBy, SortType sortType, int limit, int offset) {
+    protected Map<String, String[]> table(ColumnsEnumInterface sortBy, SortType sortType, int limit, int offset) {
         ExerciseDao dao = new ExerciseDao();
         Exercise[] exercises = dao.loadSortedWithLimit(sortBy, sortType, limit, offset);
-        Map<Integer, String[]> table = new LinkedHashMap<>();
+        Map<String, String[]> table = new LinkedHashMap<>();
         for (int i = 0 ; i < exercises.length ; i++) {
             String[] row = new String[2];
             row[0] = exercises[i].getTitle();
             row[1] = exercises[i].getDescription();
-            table.put(exercises[i].getId(), row);
+            table.put(Integer.toString(exercises[i].getId()), row);
         }
         return table;
     }

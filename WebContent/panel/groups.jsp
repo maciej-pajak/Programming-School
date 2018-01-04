@@ -13,7 +13,7 @@
     <jsp:attribute name="editFormFields">
         <div class="form-group">
              <label>Group name:</label>
-             <input class="form-control" name="name" placeholder="${row.value[0]}">
+             <input class="form-control" name="name" placeholder="${tableBody[param.edit][0]}">
         </div>
     </jsp:attribute>
 </t:adminWrapper>
