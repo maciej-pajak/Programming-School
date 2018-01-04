@@ -1,7 +1,7 @@
-<%@tag description="Simple Wrapper Tag" pageEncoding="UTF-8"%>
-<%@attribute name="title" required="true"%>
-<%@attribute name="adminMenu" fragment="true" %>
-<%@attribute name="adminActive" required="false"%>
+<%@ tag description="Simple Wrapper Tag" pageEncoding="UTF-8" %>
+<%@ attribute name="title" required="true" %>
+<%@ attribute name="adminMenu" fragment="true" %>
+<%@ attribute name="adminActive" required="false" %>
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,6 +1,6 @@
 package pl.coderslab.controller.admin;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.annotation.WebServlet;
@@ -16,20 +16,29 @@ import pl.coderslab.model.standards.DaoInterface;
 public class UserAdmin extends AbstractServlet<User> {
 	private static final long serialVersionUID = 1L;
 	
-	protected void sendAdditionalItemsForEdit(HttpServletRequest request) {
-	    GroupDao dao = new GroupDao();
-        request.setAttribute("groups", dao.loadAll());
+	protected Map<Integer, String[]> table(ColumnsEnumInterface sortBy, DaoInterface.SortType sortType, int limit, int offset) {
+	    UserDao dao = new UserDao();
+	    GroupDao gDao = new GroupDao();
+	    User[] users = dao.loadSortedWithLimit(sortBy, sortType, limit, offset);
+	    Map<Integer, String[]> table = new LinkedHashMap<>();
+        for (int i = 0 ; i < users.length ; i++) {
+            String[] row = new String[3];
+            row[0] = users[i].getUsername();
+            row[1] = users[i].getEmail();
+            row[2] = gDao.loadById(users[i].getGroupId()).getName();
+            table.put(users[i].getId(), row);
+        }
+	    return table;
+	}
+	
+	@Override
+    protected String[][] tableHeader() {
+        return new String[][] { {"User", "USERNAME"}, {"Email", "EMAIL"}, {"Group", "GROUPID"} };
     }
 	
-	protected void mapAdditionalIdsToStrings(HttpServletRequest request, User[] usersOnPage) {
-        GroupDao dao = new GroupDao();
-        Map<Integer,String> groupsNames = new HashMap<>();
-        for (User u : usersOnPage) {
-            if ( !groupsNames.containsKey(u.getGroupId()) ) {
-                groupsNames.put(u.getGroupId(), dao.loadById(u.getGroupId()).getName());
-            }
-        }
-        request.setAttribute("groupsNames", groupsNames);
+	protected void setAdditionalParameters(HttpServletRequest request) {
+	    GroupDao dao = new GroupDao();
+        request.setAttribute("groups", dao.loadAll());
     }
 
     protected User createObject(HttpServletRequest request) {
@@ -37,7 +46,6 @@ public class UserAdmin extends AbstractServlet<User> {
     }
 
     protected User editObject(HttpServletRequest request, User object) {
-        System.out.println("editing: " + object.getUsername());
         String username = request.getParameter("name");
         if (!username.isEmpty()) {          // TODO check if this works correctly
             object.setUsername(username);
@@ -71,5 +79,5 @@ public class UserAdmin extends AbstractServlet<User> {
     protected DaoInterface<User> getDao() {
         return new UserDao();
     }
-
+    
 }
